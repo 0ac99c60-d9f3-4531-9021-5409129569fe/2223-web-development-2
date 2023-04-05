@@ -1,0 +1,14 @@
+{
+    "include": ["**/*"],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["app/*"],
+            "api/*": ["**/*"],
+        },
+        "module": "commonjs",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "strict": false,
+    },
+}

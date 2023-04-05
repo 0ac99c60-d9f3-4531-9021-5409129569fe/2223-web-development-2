@@ -1,0 +1,17 @@
+{
+    "extends": "@vue/tsconfig/tsconfig.web.json",
+    "include": ["env.d.ts", "app/**/*", "app/**/*.vue", "api/**/*"],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["app/*"],
+            "api/*": ["api/*"],
+        },
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "strict": false,
+    },
+    "references": [{
+        "path": "./tsconfig.config.json",
+    }],
+}
