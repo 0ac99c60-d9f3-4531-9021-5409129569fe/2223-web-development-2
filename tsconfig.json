@@ -1,17 +1,13 @@
 {
-    "extends": "@vue/tsconfig/tsconfig.web.json",
-    "include": ["env.d.ts", "app/**/*", "app/**/*.vue", "api/**/*"],
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "@/*": ["app/*"],
-            "api/*": ["api/*"],
+            "@app/*": ["packages/app/src/*"],
+            "@api/*": ["packages/api/src/*"],
         },
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "strict": false,
     },
-    "references": [{
-        "path": "./tsconfig.config.json",
-    }],
+    "references": [
+        { "path": "./packages/app" },
+        { "path": "./packages/api" },
+    ],
 }
