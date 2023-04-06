@@ -1,27 +1,34 @@
 # 2223-web-development-2
 
-This template should help get you started developing with Vue 3 in Vite.
+This repo contains my project for the Web Development 2 course. It is a monorepo consisting of the following packages:
 
-## Recommended IDE Setup
+- `api` - The backend API written in TypeScript using Express
+- `app` - The frontend web app written in TypeScript using Vue
+- `common` - Common code shared between the API and the web app
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Live version
 
-## Type Support for `.vue` Imports in TS
+The live version of the app is available at:
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+[TBD]()
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+## Users
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+The following accounts are available by default:
 
-## Customize configuration
+| Username | Password | Role |
+| -------- | -------- | ---- |
+| TBD      | TBD      | TBD  |
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## Development
 
-## Project Setup
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en/)
+- [pnpm](https://pnpm.io/)
+- [PM2](https://www.npmjs.com/package/pm2)
+
+### Install packages
 
 ```sh
 pnpm install
@@ -33,8 +40,29 @@ pnpm install
 pnpm dev
 ```
 
-### Type-Check, Compile and Minify for Production
+This will start the API and the web app in development mode. The API will be available at http://localhost:8082 and the web app will be available at http://localhost:5173.
+
+### Start API and Web App Separately
+
+To start the API:
+```sh
+pnpm api:start
+```
+
+To start the web app in development mode:
+```sh
+pnpm app:dev
+```
+
+To build the web app for production:
+```sh
+pnpm app:build
+```
+
+### Build for Production
 
 ```sh
 pnpm build
 ```
+
+This will build the API and the web app for production.
