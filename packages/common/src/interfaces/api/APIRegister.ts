@@ -4,6 +4,7 @@ export interface APIRegisterBody {
     username: string;
     password: string;
     displayName: string;
+    // @ts-ignore
     profilePicture: Buffer;
 }
 
