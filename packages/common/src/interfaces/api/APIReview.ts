@@ -1,4 +1,4 @@
-import { IReview } from "../IReview";
+import type { IReview } from "../IReview";
 
 export interface APIReviewBody {
     message: string;

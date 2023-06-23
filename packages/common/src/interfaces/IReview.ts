@@ -1,5 +1,5 @@
-import { IUser } from "./IUser";
-import { IMovie } from "./IMovie";
+import type { IUser } from "./IUser";
+import type { IMovie } from "./IMovie";
 
 export interface IReview {
     id: number;
