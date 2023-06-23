@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
 import { onMounted } from "vue";
-// @ts-ignore
 import Navbar from "@app/components/Navbar.vue";
 import { useUserStore } from "@app/stores/UserStore";
 import Divider from "primevue/divider";
