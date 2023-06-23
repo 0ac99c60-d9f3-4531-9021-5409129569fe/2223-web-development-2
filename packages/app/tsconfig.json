@@ -1,6 +1,6 @@
 {
     "extends": ["@vue/tsconfig/tsconfig.web.json", "../../tsconfig.json"],
-    "include": ["env.d.ts", "src/**/*.vue", "src/**/*"],
+    "include": ["env.d.ts", "src/**/*.vue", "src/**/*.ts"],
     "compilerOptions": {
         "lib": [
             "DOM",
