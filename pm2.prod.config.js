@@ -10,6 +10,8 @@ module.exports = {
             interpreter: "bash",
             script: "pnpm",
             args: "api:start",
+            restart_delay: 15e3,
+            max_restarts: 10,
             log_date_format: "YYYY-MM-DD HH:mm Z",
             env,
         },

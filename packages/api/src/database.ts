@@ -1,6 +1,8 @@
 import { DataSource } from "typeorm";
 import { User } from "@api/models/User";
 import { Movie } from "@api/models/Movie";
+import { Review } from "@api/models/Review";
+import { Watchlist } from "@api/models/Watchlist";
 
 let database: DataSource;
 
@@ -11,6 +13,8 @@ export async function initializeDatabase() {
         entities: [
             User,
             Movie,
+            Review,
+            Watchlist,
         ],
         synchronize: true,
         logging: false,

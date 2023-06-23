@@ -1,20 +1,42 @@
 import { User } from "@api/models/User";
-import type { IUser } from "@filmeye/common";
+import { hashPassword } from "@api/utils/PasswordUtils";
+import type { APILoginBody, APIRegisterBody } from "@filmeye/common";
 
 export class UserRepository {
-    constructor() { }
-
-    async getUser(userId: number) {
-        return User.findOneBy({ id: userId });
+    async getUser(userId: number): Promise<User> {
+        const user = await User.findOne({
+            select: { password: false },
+            where: { id: userId },
+        });
+        if (!user) return null;
+        return user;
     }
 
-    async createUser(user: IUser) {
-        return User.save({
-            email: user.email,
-            username: user.username,
-            password: user.password,
-            profilePicture: user.profilePicture,
+    async createUser(body: APIRegisterBody): Promise<User> {
+        // generate password hash
+        const password = await hashPassword(body.password);
+        // create user
+        const user = await User.save({
+            username: body.username,
+            password,
+            displayName: body.displayName,
+            profilePicture: body.profilePicture,
             createdAt: new Date(),
         });
+        if (!user) return null;
+        return user;
+    }
+
+    async login(body: APILoginBody): Promise<User> {
+        const password = await hashPassword(body.password);
+        const user = await User.findOne({
+            select: { password: false },
+            where: {
+                username: body.username,
+                password,
+            },
+        });
+        if (!user) return null;
+        return user;
     }
 }

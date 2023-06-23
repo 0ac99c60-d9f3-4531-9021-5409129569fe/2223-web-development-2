@@ -1,11 +1,18 @@
 import { MovieRepository } from "@api/repositories/MovieRepository";
+import { IMovie } from "packages/common/src";
 
 export class MovieService {
-    constructor(private movieRepository: MovieRepository) {
+    private movieRepository: MovieRepository;
+
+    constructor() {
         this.movieRepository = new MovieRepository();
     }
 
-    async get(movieId: number) {
+    async getMovie(movieId: number) {
         return this.movieRepository.getMovie(movieId);
+    }
+
+    async createMovie(movie: IMovie) {
+        return this.movieRepository.createMovie(movie);
     }
 }

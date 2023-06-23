@@ -7,10 +7,11 @@ module.exports = {
         {
             name: "api",
             namespace: "webdev2-dev",
-            watch: ["./packages/api/src"],
             interpreter: "bash",
             script: "pnpm",
             args: "api:start",
+            watch: ["packages/api/src"],
+            restart_delay: 4e3,
             log_date_format: "YYYY-MM-DD HH:mm Z",
             env,
         },

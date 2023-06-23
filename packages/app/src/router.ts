@@ -1,5 +1,17 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@app/views/HomeView.vue";
+import { useUserStore } from "@app/stores/UserStore";
+
+const loginRequired = (to, from) => {
+    const UserStore = useUserStore();
+    if (!UserStore.isLoggedIn)
+        return { path: "/" };
+};
+const signedOutRequired = (to, from) => {
+    const UserStore = useUserStore();
+    if (UserStore.isLoggedIn)
+        return { path: "/" };
+};
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,22 +22,44 @@ const router = createRouter({
             component: HomeView,
         },
         {
+            path: "/movies",
+            name: "movies",
+            component: () => import("./views/MoviesView.vue"),
+        },
+        {
+            path: "/movies/:movieId",
+            name: "movieDetail",
+            component: () => import("./views/MovieDetailView.vue"),
+        },
+        {
+            path: "/diary",
+            name: "diary",
+            component: () => import("./views/DiaryView.vue"),
+            beforeEnter: loginRequired,
+        },
+        {
             path: "/watchlist",
             name: "watchlist",
-            // route level code-splitting
-            // this generates a separate chunk (About.[hash].js) for this route
-            // which is lazy-loaded when the route is visited.
             component: () => import("./views/WatchlistView.vue"),
+            beforeEnter: loginRequired,
+        },
+        {
+            path: "/profile",
+            name: "profile",
+            component: () => import("./views/ProfileView.vue"),
+            beforeEnter: loginRequired,
         },
         {
             path: "/login",
             name: "login",
             component: () => import("./views/LoginView.vue"),
+            beforeEnter: signedOutRequired,
         },
         {
             path: "/register",
             name: "register",
             component: () => import("./views/RegisterView.vue"),
+            beforeEnter: signedOutRequired,
         },
     ],
 });

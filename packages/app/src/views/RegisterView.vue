@@ -1,42 +1,35 @@
 <script setup lang="ts">
+import { onUnmounted } from "vue";
+import { storeToRefs } from "pinia";
 import InputText from "primevue/inputtext";
 import Password from "primevue/password";
+import FileUpload from "primevue/fileupload";
 import Button from "primevue/button";
-import { storeToRefs } from "pinia";
 import { useRegisterStore } from "@app/stores/RegisterStore";
-import { useUserStore } from "@app/stores/UserStore";
+import { VALID_IMAGE_TYPES, MAX_IMAGE_SIZE } from "@filmeye/common";
 
 const RegisterStore = useRegisterStore();
-const UserStore = useUserStore();
 const {
-    email,
     username,
     password,
-    isEmailInvalid,
+    displayName,
     isUsernameInvalid,
     isPasswordInvalid,
+    isDisplayNameInvalid,
+    usernameError,
 } = storeToRefs(RegisterStore);
-const { handleRegister } = RegisterStore;
+const { handleRegister, handleUpload, $reset } = RegisterStore;
 
-console.log(UserStore.currentUser);
+onUnmounted(() => {
+    $reset();
+});
 </script>
 
 <template>
     <form :onSubmit="handleRegister">
-        <h2>Sign up</h2>
+        <h1 class="mt-0">Sign up</h1>
 
         <div class="fields">
-            <div class="field">
-                <label for="email">Email</label>
-                <InputText
-                    type="email"
-                    id="email"
-                    v-model="email"
-                    class="p-2"
-                    :class="{'p-invalid': !!isEmailInvalid}"
-                />
-            </div>
-
             <div class="field">
                 <label for="username">Username</label>
                 <InputText
@@ -45,6 +38,7 @@ console.log(UserStore.currentUser);
                     class="p-2"
                     :class="{'p-invalid': !!isUsernameInvalid}"
                 />
+                <small class="block p-error" id="text-error">{{ usernameError }}</small>
             </div>
 
             <div class="field">
@@ -58,7 +52,32 @@ console.log(UserStore.currentUser);
                 />
             </div>
 
-            <Button type="submit" label="Sign up" />
+            <div class="field">
+                <label for="profilePicture">Profile picture</label>
+                <FileUpload
+                    mode="basic"
+                    name="profilePicture[]"
+                    :accept="VALID_IMAGE_TYPES.join(', ')"
+                    :maxFileSize="MAX_IMAGE_SIZE"
+                    @select="handleUpload"
+                />
+            </div>
+
+            <div class="field">
+                <label for="displayName">Display Name</label>
+                <InputText
+                    id="displayName"
+                    v-model="displayName"
+                    class="p-2"
+                    :class="{'p-invalid': !!isDisplayNameInvalid}"
+                />
+            </div>
+
+            <div class="my-3 text-400">
+                <small>By creating an account you agree to the Terms of Service.</small>
+            </div>
+
+            <Button type="submit" label="Create your account" severity="success" />
         </div>
 
         <div class="mt-3">

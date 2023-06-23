@@ -16,9 +16,9 @@ The live version of the app is available at:
 
 The following accounts are available by default:
 
-| Username | Password | Role |
-| -------- | -------- | ---- |
-| TBD      | TBD      | TBD  |
+| Username  | Password |
+| --------- | -------- |
+| test      | test123  |
 
 ## Development
 
@@ -33,6 +33,10 @@ The following accounts are available by default:
 ```sh
 pnpm install
 ```
+
+### Setup environment variables
+
+Copy the `.env.example` file to `.env` and fill in the values.
 
 ### Compile and Hot-Reload for Development
 
@@ -65,4 +69,4 @@ pnpm app:build
 pnpm build
 ```
 
-This will build the API and the web app for production.
+This will build the API and the web app for production. The API will be available at port 8082, but the web app will need to be served separately via nginx or the like.

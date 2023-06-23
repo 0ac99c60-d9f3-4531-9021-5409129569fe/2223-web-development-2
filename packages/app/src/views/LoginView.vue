@@ -1,23 +1,28 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onUnmounted } from "vue";
+import { storeToRefs } from "pinia";
 import InputText from "primevue/inputtext";
 import Password from "primevue/password";
 import Button from "primevue/button";
+import { useLoginStore } from "@app/stores/LoginStore";
 
-const username = ref("");
-const password = ref("");
-const isUsernameValid = ref(true);
-const isPasswordValid = ref(true);
+const LoginStore = useLoginStore();
+const {
+    username,
+    password,
+    isUsernameInvalid,
+    isPasswordInvalid,
+} = storeToRefs(LoginStore);
+const { handleLogin, $reset } = LoginStore;
 
-function onSubmit(e: Event) {
-    e.preventDefault();
-    alert("test");
-}
+onUnmounted(() => {
+    $reset();
+});
 </script>
 
 <template>
-    <form :onSubmit="onSubmit">
-        <h2>Login</h2>
+    <form :onSubmit="handleLogin">
+        <h1 class="mt-0">Login</h1>
 
         <div class="fields">
             <div class="field mt-5">
@@ -25,7 +30,7 @@ function onSubmit(e: Event) {
                     <InputText
                         id="username"
                         v-model="username"
-                        :class="{ 'p-invalid': !isUsernameValid }"
+                        :class="{'p-invalid': !!isUsernameInvalid}"
                     />
                     <label for="username">Username</label>
                 </span>
@@ -38,7 +43,7 @@ function onSubmit(e: Event) {
                         v-model="password"
                         toggleMask
                         :feedback="false"
-                        :class="{ 'p-invalid': !isPasswordValid }"
+                        :class="{'p-invalid': !!isPasswordInvalid}"
                     />
                     <label for="password">Password</label>
                 </span>

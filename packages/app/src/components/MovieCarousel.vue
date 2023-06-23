@@ -27,33 +27,46 @@ const props = withDefaults(defineProps<Props>(), {
         },
         {
             breakpoint: "768px",
-            numVisible: 2,
-            numScroll: 2,
+            numVisible: 3,
+            numScroll: 3,
         },
         {
             breakpoint: "560px",
-            numVisible: 2,
-            numScroll: 2,
+            numVisible: 4,
+            numScroll: 4,
         },
     ],
-    style: { width: "66vw" },
 });
 </script>
 
 <template>
-    <Carousel v-bind="props" :style="{ width: '66vw' }">
+    <Carousel v-bind="props">
         <template #header>
             <h3>{{ props.title }}</h3>
         </template>
         <template #item="slotProps">
-            <div class="item">
-                <img :src="`https://image.tmdb.org/t/p/w500/${slotProps.data.poster_path}`" :style="{ width: '14vw' }">
+            <div class="item" v-tooltip.bottom="slotProps.data.title">
+                <RouterLink :to="`/movies/${slotProps.data.id}`">
+                    <img
+                        :src="`https://image.tmdb.org/t/p/w500/${slotProps.data.poster_path}`"
+                        :style="{ width: '14vw' }"
+                        :title="slotProps.data.title"
+                    />
+                </RouterLink>
             </div>
         </template>
     </Carousel>
 </template>
 
 <style scoped>
+.p-carousel {
+    width: 66vw;
+}
+@media screen and (max-width: 768px) {
+    .p-carousel {
+        width: 88vw;
+    }
+}
 .p-carousel-item img {
     width: 30%;
     height: 30%;

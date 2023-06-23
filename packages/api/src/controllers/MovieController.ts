@@ -1,113 +1,91 @@
-import { Body, Controller, Delete, Get, Params, Patch, Post, Response } from "@decorators/express";
+import { Body, Controller, Delete, Get, Params, Patch, Post, Query, Response } from "@decorators/express";
 import type { Response as RESTResponse } from "express";
-import { Movie } from "@api/models/Movie";
+import type { APIReviewBody, IMovie, IMovieResponse } from "@filmeye/common";
+import { ReviewService } from "@api/services/ReviewService";
+import { userRequired } from "@api/middleware/userRequired";
+import { UserService } from "@api/services/UserService";
+import { MovieService } from "@api/services/MovieService";
+import { TmdbService } from "../services/TmdbService";
 
 @Controller("/movies")
 export class MovieController {
-    // @Get("/:id")
-    // async getMovie(@Response() res: RESTResponse, @Params("id") id: string) {
-    //     try {
-    //         const movie = await Movie.findById(id, { Password: false});
+    private reviewService: ReviewService;
+    private userService: UserService;
+    private movieService: MovieService;
 
-    //         if (movie === null) {
-    //             return res.status(404).json({
-    //                 message: "Movie not found",
-    //             });
-    //         }
+    constructor() {
+        this.reviewService = new ReviewService();
+        this.userService = new UserService();
+        this.movieService = new MovieService();
+    }
 
-    //         res.status(200).json(movie);
-    //     } catch (err) {
-    //         if (err instanceof MongooseError.CastError && err.kind === "ObjectId") {
-    //             return res.status(404).json({
-    //                 message: "Movie not found",
-    //             });
-    //         }
+    @Get("/trending")
+    async getTrendingMovies(@Response() res: RESTResponse) {
+        const [response, data] = await TmdbService.fetchTMDB<IMovieResponse>("/trending/movie/day");
+        if (!response.ok)
+            return res.status(404).json({
+                message: "Trending movies not found",
+            });
+        return data;
+    }
 
-    //         console.error(err);
-    //         res.status(500).json({
-    //             message: "An error occured",
-    //             error: err,
-    //         });
-    //     }
-    // }
+    @Get("/upcoming")
+    async getUpcomingMovies(@Response() res: RESTResponse) {
+        const [response, data] = await TmdbService.fetchTMDB<IMovieResponse>("/movie/upcoming");
+        if (!response.ok)
+            return res.status(404).json({
+                message: "Upcoming movies not found",
+            });
+        return data;
+    }
 
-    // @Get("/")
-    // async getMovies(@Response() res: RESTResponse) {
-    //     try {
-    //         const movies = await Movie.find(null, { Password: false });
+    @Get("/:movieId")
+    async getMovie(@Response() res: RESTResponse, @Params("movieId") id: number) {
+        const [response, data] = await TmdbService.fetchTMDB<IMovie>(`/movie/${id}`);
+        if (!response.ok)
+            return res.status(404).json({
+                message: "Movie not found",
+            });
+        return data;
+    }
 
-    //         res.status(200).json(movies);
-    //     } catch (err) {
-    //         console.error(err);
-    //         res.status(500).json({
-    //             message: "An error occured",
-    //             error: err,
-    //         });
-    //     }
-    // }
+    @Get("/:movieId/reviews")
+    async getReviews(@Response() res: RESTResponse, @Params("movieId") movieId: number, @Query("offset") offset = "0", @Query("limit") limit = "10") {
+        const newReviews = await this.reviewService.getReviews({
+            movieId,
+            offset: parseInt(offset),
+            limit: parseInt(limit),
+        });
 
-    // @Post("/")
-    // async addMovie(@Response() res: RESTResponse, @Body() body: IMovie) {
-    //     try {
-    //         const movie = new Movie(body);
-    //         await movie.save();
+        if (newReviews === null)
+            return res.status(404).json({
+                message: "Movie not found",
+            });
 
-    //         res.status(201).json(movie);
-    //     } catch (err) {
-    //         console.error(err);
-    //         res.status(500).json({
-    //             message: "An error occured",
-    //             error: err,
-    //         });
-    //     }
-    // }
+        const json = {
+            count: newReviews.count,
+            reviews: newReviews.reviews.map(review => review.toJSON()),
+        };
+        res.status(200).json(json);
+    }
 
-    // @Patch("/:id")
-    // async updateMovie(@Response() res: RESTResponse, @Params("id") id: string, @Body() body: Partial<IMovie>) {
-    //     try {
-    //         const movie = await Movie.findByIdAndUpdate(id, body, {
-    //             new: true,
-    //             runValidators: true,
-    //         });
-    //         if (movie === null) {
-    //             return res.status(404).json({
-    //                 message: "Movie not found",
-    //             });
-    //         }
+    @Post("/:movieId/reviews", [userRequired])
+    async addReview(@Response() res: RESTResponse, @Params("movieId") movieId: number, @Body() body: APIReviewBody) {
+        const user = await this.userService.getUser(res.user.id);
+        let movie = await this.movieService.getMovie(movieId);
 
-    //         res.status(200).json(movie);
-    //     } catch (err) {
-    //         if (err instanceof MongooseError.CastError && err.kind === "ObjectId") {
-    //             return res.status(404).json({
-    //                 message: "Movie not found",
-    //             });
-    //         }
+        if (!movie) {
+            const [res, data] = await TmdbService.fetchTMDB<IMovie>(`/movie/${movieId}`);
+            if (res.ok)
+                movie = await this.movieService.createMovie(data);
+        }
 
-    //         console.error(err);
-    //         res.status(500).json({
-    //             message: "An error occured",
-    //             error: err,
-    //         });
-    //     }
-    // }
+        if (!movie)
+            return res.status(404).json({
+                message: "Movie not found",
+            });
 
-    // @Delete("/:id")
-    // async deleteMovie(@Response() res: RESTResponse, @Params("id") id: string) {
-    //     try {
-    //         const movie = await Movie.findByIdAndDelete(id);
-    //         res.status(200).json(movie);
-    //     } catch (err) {
-    //         if (err instanceof MongooseError.CastError && err.kind === "ObjectId") {
-    //             return res.status(404).json({
-    //                 message: "Movie not found",
-    //             });
-    //         }
-
-    //         console.error(err);
-    //         res.status(500).json({
-    //             message: "An error occured",
-    //             error: err,
-    //         });
-    //     }
-    // }
+        const review = await this.reviewService.createReview(user, movie, body);
+        res.status(201).json(review.toJSON());
+    }
 }

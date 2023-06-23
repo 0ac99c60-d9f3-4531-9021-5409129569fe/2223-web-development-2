@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "main": "src/index.ts",
     "author": "Tiemen",
-    "dependencies": {},
-    "devDependencies": {}
+    "devDependencies": {
+        "@types/node": "^18.13.0"
+    }
 }

@@ -2,6 +2,11 @@
     "extends": ["@vue/tsconfig/tsconfig.web.json", "../../tsconfig.json"],
     "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
     "compilerOptions": {
+        "lib": [
+            "DOM",
+            "DOM.Iterable",
+            "ES2021",
+        ],
         "outDir": "dist",
         "composite": true,
         "strict": false,

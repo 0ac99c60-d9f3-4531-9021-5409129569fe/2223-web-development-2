@@ -1,17 +1,31 @@
 import { UserRepository } from "@api/repositories/UserRepository";
-import { User } from "@api/models/User";
-import type { IUser } from "@filmeye/common";
+import { TokenService } from "@api/services/TokenService";
+import type { APILoginBody, APIRegisterBody } from "@filmeye/common";
 
 export class UserService {
-    constructor(private userRepository?: UserRepository) {
+    private userRepository: UserRepository;
+    private tokenService: TokenService;
+
+    constructor() {
         this.userRepository = new UserRepository();
+        this.tokenService = new TokenService();
     }
 
     async getUser(userId: number) {
         return this.userRepository.getUser(userId);
     }
 
-    async createUser(user: IUser) {
-        return this.userRepository.createUser(user);
+    async createUser(body: APIRegisterBody) {
+        const user = await this.userRepository.createUser(body);
+        if (!user) return null;
+        const token = await this.tokenService.generateToken(user);
+        return { ...user, token };
+    }
+
+    async login(body: APILoginBody) {
+        const user = await this.userRepository.login(body);
+        if (!user) return null;
+        const token = await this.tokenService.generateToken(user);
+        return { ...user, token };
     }
 }

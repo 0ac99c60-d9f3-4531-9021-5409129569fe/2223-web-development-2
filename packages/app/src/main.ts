@@ -5,6 +5,8 @@ import PrimeVue from "primevue/config";
 import App from "@app/App.vue";
 import router from "@app/router";
 
+import Tooltip from "primevue/tooltip";
+
 import "primeicons/primeicons.css";
 import "primevue/resources/primevue.min.css";
 import "primevue/resources/themes/viva-dark/theme.css";
@@ -16,5 +18,7 @@ const app = createApp(App);
 app.use(createPinia());
 app.use(PrimeVue);
 app.use(router);
+
+app.directive("tooltip", Tooltip);
 
 app.mount("#app");
